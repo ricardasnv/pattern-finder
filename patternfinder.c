@@ -1,0 +1,181 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct Pattern {
+	char* txt;        // pattern text
+	unsigned int n;   // number of occurences
+} Pattern;
+
+typedef struct PNode {
+	Pattern pttn; // pattern
+	struct PNode* next;  // ptr to next pattern in list
+} PNode;
+
+// Operations with linked lists
+PNode* new_node();
+PNode* find_node_by_txt(PNode* list, const char* stxt);
+void   add_node(PNode* list, PNode* new_node);
+void   print_elements(PNode* list, int threshold);
+
+// Misc
+void fatal_error(const char* message);
+
+// Crypto
+int load_file(const char* filename, char** text, int* len);
+PNode* get_patterns(char* text, int text_len, int min_len, int max_len);
+
+int main(int argc, char** argv) {
+	char* filename = argv[1];
+	char* text;
+	int len;
+	int threshold = 1;
+
+	if (argc != 4 && argc != 5) {
+		char msg[128];
+		snprintf(msg, 128, "Usage: %s <filename> <min pttn length> <max pttn length>", argv[0]);
+		fatal_error(msg);
+	}
+
+	if (argc == 5) {
+		threshold = atoi(argv[4]);
+	}
+
+	if (load_file(argv[1], &text, &len)) {
+		char msg[128];
+		snprintf(msg, 128, "Failed to open file %s", filename);
+		fatal_error(msg);
+	}
+
+	PNode* patterns = get_patterns(text, len, atoi(argv[2]), atoi(argv[3]));
+
+	print_elements(patterns, threshold);
+
+	return 0;
+}
+
+// Returns ptr to empty node with next ptr pointing to NULL
+PNode* new_node() {
+	PNode* pn = malloc(sizeof(PNode));
+	pn->pttn.txt = NULL;
+	pn->pttn.n = 0;
+	pn->next = NULL;
+	return pn;
+}
+
+// Adds node to end of list
+void add_node(PNode* list, PNode* new_node) {
+	PNode* cursor = list;
+
+	// Walk to end of list
+	while (cursor->next != NULL) {
+		cursor = cursor->next;
+	}
+
+	cursor->next = new_node;
+	new_node->next = NULL;
+}
+
+// Returns the first node n with n->pttn.txt == stxt
+PNode* find_node_by_txt(PNode* list, const char* stxt) {
+	PNode* cursor = list;
+
+	while (cursor != NULL) {
+		if (cursor->pttn.txt != NULL && strcmp(cursor->pttn.txt, stxt) == 0) {
+			return cursor;
+		}
+
+		cursor = cursor->next;
+	}
+
+	return NULL;
+}
+
+// Print error message and exit
+void fatal_error(const char* message) {
+	printf("%s\n", message);
+	exit(1);
+}
+
+// Loads text from 'filename' into 'buffer' and stores its length in 'len'
+// Returns 0 if OK, 1 otherwise
+int load_file(const char* filename, char** text, int* len) {
+	FILE* file = fopen(filename, "r");
+	char* buffer;
+	*len = 0;
+
+	if (file == NULL) {
+		return 1;
+	}
+
+	// Count chars in file
+	while (!feof(file)) {
+		unsigned char tmp = fgetc(file);
+		(*len)++;
+	}
+
+	// Reopen file
+	fclose(file);
+	file = fopen(filename, "r");
+
+	// Copy to buffer
+	buffer = malloc(*len * sizeof(unsigned char));
+	for (int i = 0; i < *len - 1; i++) {
+		buffer[i] = fgetc(file);
+	}
+
+	buffer[*len - 1] = '\0';
+
+	*text = buffer;
+	return 0;
+}
+
+PNode* get_patterns(char* text, int text_len, int min_len, int max_len) {
+	PNode* list = new_node();
+	char* buffer;
+
+	// iterate pattern length
+	for (int pttn_len = min_len; pttn_len <= max_len; pttn_len++) {
+		// iterate beginning of pattern
+		for (int start = 0; start < text_len - pttn_len; start++) {
+			buffer = malloc((pttn_len + 1) * sizeof(char));
+
+			// copy pattern to list
+			for (int i = 0; i < pttn_len; i++) {
+				buffer[i] = text[start + i];
+			}
+
+			buffer[pttn_len] = '\0';
+
+			PNode* pn = find_node_by_txt(list, buffer);
+
+			if (pn == NULL) {
+				PNode* new = new_node();
+				new->pttn.txt = malloc((pttn_len + 1) * sizeof(char));
+				strcpy(new->pttn.txt, buffer);
+				new->pttn.n = 1;
+				add_node(list, new);
+			} else {
+				(pn->pttn.n)++;
+			}
+
+			free(buffer);
+		}
+	}
+
+	return list;
+}
+
+// Prints all elements with node->pttn.n >= threshold
+void print_elements(PNode* list, int threshold) {
+	PNode* cursor = list;
+
+	while (cursor != NULL) {
+		if (cursor->pttn.n >= threshold && cursor->pttn.txt != NULL) {
+			printf("%d %s\n", cursor->pttn.n, cursor->pttn.txt);
+		}
+
+		cursor = cursor->next;
+	}
+}
+
