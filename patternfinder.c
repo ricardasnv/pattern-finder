@@ -96,7 +96,7 @@ void fatal_error(const char* message) {
 	exit(1);
 }
 
-// Loads text from 'filename' into 'buffer' and stores its length in 'len'
+// Loads text from 'filename' into 'text' and stores its length in 'len'
 // Returns 0 if OK, 1 otherwise
 int load_file(const char* filename, char** text, int* len) {
 	FILE* file = fopen(filename, "r");
