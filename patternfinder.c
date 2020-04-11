@@ -26,7 +26,6 @@ int load_file(const char* filename, char** text, int* len);
 PNode* get_patterns(char* text, int text_len, int min_len, int max_len);
 
 int main(int argc, char** argv) {
-	char* filename = argv[1];
 	char* text;
 	int len;
 	int threshold = 1;
@@ -43,7 +42,7 @@ int main(int argc, char** argv) {
 
 	if (load_file(argv[1], &text, &len)) {
 		char msg[128];
-		snprintf(msg, 128, "Failed to open file %s", filename);
+		snprintf(msg, 128, "Failed to open file %s", argv[1]);
 		fatal_error(msg);
 	}
 
