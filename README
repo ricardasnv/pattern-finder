@@ -1,7 +1,7 @@
 PATTERN FINDER TOOL FOR SUBSTITUTION CIPHER ANALYSIS
 
 Usage:
-./patternfinder <file to analyze> <min. pattern length> <max. pattern length>
+./patternfinder <file to analyze> <min. pattern length> <max. pattern length> <repeat threshold (default = 1)>
 
 Simple tool that finds repeating patterns in a given file and counts the occurences of each. Special case <max. pattern length> = <min. pattern length> = 1 performs a frequency analysis.
 
