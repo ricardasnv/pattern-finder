@@ -3,5 +3,9 @@ PATTERN FINDER TOOL FOR SUBSTITUTION CIPHER ANALYSIS
 Usage:
 ./patternfinder <file to analyze> <min. pattern length> <max. pattern length> <repeat threshold (default = 1)>
 
+Example:
+Perform frequency analysis on lipsum-rot13.txt:     ./patternfinder lipsum-rot13.txt 1 1 | sort -n
+Find common 3-letter sequences in lipsum-rot13.txt: ./patternfinder lipsum-rot13.txt 3 3 | sort -n
+
 Simple tool that finds repeating patterns in a given file and counts the occurences of each. Special case <max. pattern length> = <min. pattern length> = 1 performs a frequency analysis.
 
