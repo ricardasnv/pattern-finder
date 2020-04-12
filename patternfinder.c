@@ -32,7 +32,7 @@ int main(int argc, char** argv) {
 
 	if (argc != 4 && argc != 5) {
 		char msg[128];
-		snprintf(msg, 128, "Usage: %s <filename> <min pttn length> <max pttn length>", argv[0]);
+		snprintf(msg, 128, "Usage: %s <filename> <min pttn length> <max pttn length> <repeat threshold, default=1>", argv[0]);
 		fatal_error(msg);
 	}
 

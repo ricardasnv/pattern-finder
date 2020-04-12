@@ -1,4 +1,4 @@
-PATTERN FINDER TOOL FOR SUBSTITUTION CIPHER ANALYSIS
+PATTERN FINDER TOOL FOR MONOALPHABETIC SUBSTITUTION CIPHER ANALYSIS
 
 Usage:
 ./patternfinder <file to analyze> <min. pattern length> <max. pattern length> <repeat threshold (default = 1)>
