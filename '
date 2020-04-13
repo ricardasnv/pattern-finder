@@ -130,7 +130,6 @@ int load_file(const char* filename, char** text, int* len) {
 	return 0;
 }
 
-// Returns linked list with all possible patterns of length between min_len and max_len
 PNode* get_patterns(char* text, int text_len, int min_len, int max_len) {
 	PNode* list = new_node();
 	char* buffer;
